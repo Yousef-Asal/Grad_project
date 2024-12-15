@@ -7,6 +7,20 @@
 import smbus
 import time
 
+import board
+import busio
+
+import adafruit_vl53l0x
+
+i2c = busio.I2C(board.SCL, board.SDA)
+vl53 = adafruit_vl53l0x.VL53L0X(i2c)
+
+def read_laser():
+    print("Laser Data:")
+    print("Range: {0}mm".format(vl53.range))
+    print("-----------------------------------------------------------------")
+
+
 def read_light():
     # Get I2C bus
     bus = smbus.SMBus(1)
@@ -34,7 +48,7 @@ def read_light():
     ch0 = data[1] * 256 + data[0]
     ch1 = data1[1] * 256 + data1[0]
     #--------------------------------------------------------------
-    bus2 = smbus.SMBus(4)
+    bus2 = smbus.SMBus(5)
 
     # TSL2561 address, 0x39(57)
     # Select control register, 0x00(00) with command register, 0x80(128)
@@ -82,6 +96,9 @@ try:
         # Read Light sensor
         read_light()
         
+        # Read Laser Sensor
+        read_laser()
+
         # Read pH sensor
         #read_ph()
         
