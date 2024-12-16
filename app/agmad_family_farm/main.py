@@ -57,13 +57,13 @@ def read_ph():
 
 def read_dht():
     # First DHT22 sensor
-    dhtDevice1 = adafruit_dht.DHT22(board.D5)
-    temperature_c = dhtDevice1.temperature
-    humidity = dhtDevice1.humidity
-    print("First DHT:")
-    print(f"Temperature: {temperature_c:.1f}°C")
-    print(f"Humidity: {humidity:.1f}%")
-    print("*****************")
+    # dhtDevice1 = adafruit_dht.DHT22(board.D5)
+    # temperature_c = dhtDevice1.temperature
+    # humidity = dhtDevice1.humidity
+    # print("First DHT:")
+    # print(f"Temperature: {temperature_c:.1f}°C")
+    # print(f"Humidity: {humidity:.1f}%")
+    # print("*****************")
     # second DHT22 sensor
     dhtDevice2 = adafruit_dht.DHT22(board.D13)
     temperature_c = dhtDevice2.temperature
