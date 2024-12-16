@@ -30,9 +30,9 @@ WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
 WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
 GPIO.setmode(GPIO.BCM)
 
-# spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
-# cs = digitalio.DigitalInOut(CE0)
-# mcp = MCP3008(spi, cs)
+spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
+cs = digitalio.DigitalInOut(CE0)
+mcp = MCP3008(spi, cs)
 
 def read_water_level():
     GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
@@ -177,7 +177,7 @@ try:
         print("\nReading sensors...")
         
         # Read DHT sensor
-        read_dht()
+        #read_dht()
         
         # Read Hall Effect sensor
         #read_hall()
@@ -189,7 +189,7 @@ try:
         #read_laser()
 
         # Read pH sensor
-        #read_ph()
+        read_ph()
         
         # Read temperature sensor
         #read_temperature()
