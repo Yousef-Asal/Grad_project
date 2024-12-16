@@ -64,23 +64,40 @@
 #         raise error
 
 #     time.sleep(2.0)
-import busio
-import digitalio
+#-----------------------------------------------------------------
+# import busio
+# import digitalio
+# import board
+# import adafruit_mcp3xxx.mcp3008 as MCP
+# from adafruit_mcp3xxx.analog_in import AnalogIn
+
+# # create the spi bus
+# spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+
+# # create the cs (chip select)
+# cs = digitalio.DigitalInOut(board.D5)
+
+# # create the mcp object
+# mcp = MCP.MCP3008(spi, cs)
+
+# # create an analog input channel on pin 0
+# chan = AnalogIn(mcp, MCP.P0)
+
+# print('Raw ADC Value: ', chan.value)
+# print('ADC Voltage: ' + str(chan.voltage) + 'V')
+#-----------------------------------------------------------------------------
+import adafruit_dht
 import board
-import adafruit_mcp3xxx.mcp3008 as MCP
-from adafruit_mcp3xxx.analog_in import AnalogIn
 
-# create the spi bus
-spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+# Initialize the DHT22 sensor (use the correct GPIO pin)
+dhtDevice = adafruit_dht.DHT22(board.D5)  # Replace D4 with your GPIO pin
 
-# create the cs (chip select)
-cs = digitalio.DigitalInOut(board.D5)
-
-# create the mcp object
-mcp = MCP.MCP3008(spi, cs)
-
-# create an analog input channel on pin 0
-chan = AnalogIn(mcp, MCP.P0)
-
-print('Raw ADC Value: ', chan.value)
-print('ADC Voltage: ' + str(chan.voltage) + 'V')
+try:
+    # Get temperature and humidity readings
+    temperature_c = dhtDevice.temperature
+    humidity = dhtDevice.humidity
+    print(f"Temperature: {temperature_c:.1f}°C")
+    print(f"Humidity: {humidity:.1f}%")
+except RuntimeError as error:
+    # Errors happen fairly often with DHT sensors, just retry
+    print(f"Error reading DHT sensor: {error}")
