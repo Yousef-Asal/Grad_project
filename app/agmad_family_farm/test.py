@@ -90,7 +90,7 @@ import Adafruit_DHT
 import board
 
 # Initialize the DHT22 sensor (use the correct GPIO pin)
-dhtDevice = Adafruit_DHT.DHT22(board.D5)  # Replace D4 with your GPIO pin
+dhtDevice = Adafruit_DHT.DHT22(5)  # Replace D4 with your GPIO pin
 
 try:
     # Get temperature and humidity readings
