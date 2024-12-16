@@ -86,19 +86,82 @@
 # print('Raw ADC Value: ', chan.value)
 # print('ADC Voltage: ' + str(chan.voltage) + 'V')
 #-----------------------------------------------------------------------------
-import adafruit_dht
-import board
+# import adafruit_dht
+# import board
 
-# Initialize the DHT22 sensor using the correct GPIO pin
-# Replace `board.D5` with the appropriate GPIO pin for your setup
-dhtDevice = adafruit_dht.DHT22(board.D5)
+# # Initialize the DHT22 sensor using the correct GPIO pin
+# # Replace `board.D5` with the appropriate GPIO pin for your setup
+# dhtDevice = adafruit_dht.DHT22(board.D5)
 
-try:
-    # Read temperature and humidity
-    temperature_c = dhtDevice.temperature
-    humidity = dhtDevice.humidity
-    print(f"Temperature: {temperature_c:.1f}°C")
-    print(f"Humidity: {humidity:.1f}%")
-except RuntimeError as error:
-    # Handle reading errors (common with DHT sensors)
-    print(f"Error reading DHT sensor: {error}")
+# try:
+#     # Read temperature and humidity
+#     temperature_c = dhtDevice.temperature
+#     humidity = dhtDevice.humidity
+#     print(f"Temperature: {temperature_c:.1f}°C")
+#     print(f"Humidity: {humidity:.1f}%")
+# except RuntimeError as error:
+#     # Handle reading errors (common with DHT sensors)
+#     print(f"Error reading DHT sensor: {error}")
+#-------------------------------------------------------------------------------
+import smbus2
+import time
+
+# I2C address of the VL53L0X
+VL53L0X_I2C_ADDR = 0x29
+
+# Register addresses
+SYSRANGE_START = 0x00
+RESULT_RANGE_STATUS = 0x14
+
+# I2C bus (typically 1 for Raspberry Pi)
+I2C_BUS = 1
+
+# VL53L0X Initialization
+class VL53L0X:
+    def __init__(self, i2c_bus, address):
+        self.bus = smbus2.SMBus(i2c_bus)
+        self.address = address
+
+    def write_byte(self, reg, value):
+        self.bus.write_byte_data(self.address, reg, value)
+
+    def read_byte(self, reg):
+        return self.bus.read_byte_data(self.address, reg)
+
+    def read_word(self, reg):
+        data = self.bus.read_i2c_block_data(self.address, reg, 2)
+        return (data[0] << 8) | data[1]
+
+    def start_ranging(self):
+        # Initialize the sensor and start ranging
+        self.write_byte(SYSRANGE_START, 0x01)
+
+    def get_distance(self):
+        # Read the range result
+        distance = self.read_word(RESULT_RANGE_STATUS + 10)
+        return distance
+
+    def stop_ranging(self):
+        # Stop ranging
+        self.write_byte(SYSRANGE_START, 0x00)
+
+# Main program
+if __name__ == "__main__":
+    try:
+        print("Initializing VL53L0X...")
+        vl53 = VL53L0X(I2C_BUS, VL53L0X_I2C_ADDR)
+
+        print("Starting ranging...")
+        vl53.start_ranging()
+
+        while True:
+            distance = vl53.get_distance()
+            print(f"Distance: {distance} mm")
+            time.sleep(0.5)
+
+    except KeyboardInterrupt:
+        print("Stopping ranging...")
+        vl53.stop_ranging()
+
+    except Exception as e:
+        print(f"Error: {e}")
