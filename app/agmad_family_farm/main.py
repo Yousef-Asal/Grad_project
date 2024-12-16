@@ -171,13 +171,13 @@ try:
         #read_laser()
 
         # Read pH sensor
-        #read_ph()
+        read_ph()
         
         # Read temperature sensor
         #read_temperature()
         
         # Read water level sensor
-        read_water_level()
+        #read_water_level()
         
         time.sleep(4)  # Delay between readings
 
