@@ -60,6 +60,8 @@ def read_ph():
     raw_value = read_adc(PH_SENSOR_CHANNEL)
     ph_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
     print(f"pH Sensor: pH={ph_value:.2f}")
+    print("-------------------------------------------------------------------------------------------------")
+
     return ph_value
 
 def read_dht():
@@ -198,7 +200,7 @@ try:
         #read_temperature()
         
         # Read water level sensor
-        #read_water_level()
+        read_water_level()
         
         time.sleep(4)  # Delay between readings
 
