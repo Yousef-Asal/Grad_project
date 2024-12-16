@@ -14,10 +14,13 @@ import adafruit_vl53l0x
 i2c = busio.I2C(board.SCL, board.SDA)
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
+SENSOR_DHT22 = Adafruit_DHT.DHT22
+SENSOR_DHT11 = Adafruit_DHT.DHT11
 
-dhtDevice22_1 = Adafruit_DHT.DHT22(board.D5)
-dhtDevice22_2 = Adafruit_DHT.DHT22(board.D6)
-dhtDevice11 = Adafruit_DHT.DHT11(board.D0)
+# Define the GPIO pins for the sensors
+DHT22_PIN1 = 5  # GPIO pin for the first DHT22
+DHT22_PIN2 = 6  # GPIO pin for the second DHT22
+DHT11_PIN = 0   # GPIO pin for the DHT11
 
 WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
 WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
@@ -39,35 +42,46 @@ def read_water_level():
     print("-------------------------------------------------------------------------------------------------")
 
 def read_dht():
-    temperature_c = dhtDevice22_1.temperature
-    temperature_f = temperature_c * (9 / 5) + 32
-    humidity = dhtDevice22_1.humidity
-    print("1. first dht22 data:")
-    print(
-        "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
-            temperature_f, temperature_c, humidity
+    # First DHT22 sensor
+    humidity, temperature_c = Adafruit_DHT.read_retry(SENSOR_DHT22, DHT22_PIN1)
+    if humidity is not None and temperature_c is not None:
+        temperature_f = temperature_c * (9 / 5) + 32
+        print("1. First DHT22 data:")
+        print(
+            "Temp: {:.1f} F / {:.1f} C    Humidity: {}%".format(
+                temperature_f, temperature_c, humidity
+            )
         )
-    )
+    else:
+        print("Failed to read from the first DHT22 sensor.")
     print("*****************")
-    temperature_c = dhtDevice22_2.temperature
-    temperature_f = temperature_c * (9 / 5) + 32
-    humidity = dhtDevice22_2.humidity
-    print("2. second dht22 data:")
-    print(
-        "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
-            temperature_f, temperature_c, humidity
+
+    # Second DHT22 sensor
+    humidity, temperature_c = Adafruit_DHT.read_retry(SENSOR_DHT22, DHT22_PIN2)
+    if humidity is not None and temperature_c is not None:
+        temperature_f = temperature_c * (9 / 5) + 32
+        print("2. Second DHT22 data:")
+        print(
+            "Temp: {:.1f} F / {:.1f} C    Humidity: {}%".format(
+                temperature_f, temperature_c, humidity
+            )
         )
-    )
+    else:
+        print("Failed to read from the second DHT22 sensor.")
     print("*****************")
-    temperature_c = dhtDevice11.temperature
-    temperature_f = temperature_c * (9 / 5) + 32
-    humidity = dhtDevice11.humidity
-    print("3. dht11 data:")
-    print(
-        "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
-            temperature_f, temperature_c, humidity
+
+    # DHT11 sensor
+    humidity, temperature_c = Adafruit_DHT.read_retry(SENSOR_DHT11, DHT11_PIN)
+    if humidity is not None and temperature_c is not None:
+        temperature_f = temperature_c * (9 / 5) + 32
+        print("3. DHT11 data:")
+        print(
+            "Temp: {:.1f} F / {:.1f} C    Humidity: {}%".format(
+                temperature_f, temperature_c, humidity
+            )
         )
-    )
+    else:
+        print("Failed to read from the DHT11 sensor.")
     print("------------------------------------------------------------------")
 
 def read_laser():
