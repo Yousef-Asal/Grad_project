@@ -1,0 +1,26 @@
+Adafruit-Blinka==8.50.0
+adafruit-circuitpython-busdevice==5.2.10
+adafruit-circuitpython-connectionmanager==3.1.2
+adafruit-circuitpython-mcp3xxx==1.4.18
+adafruit-circuitpython-requests==4.1.8
+adafruit-circuitpython-typing==1.11.1
+#Adafruit-DHT==1.4.0
+Adafruit-PlatformDetect==3.75.0
+Adafruit-PureIO==1.1.11
+binho-host-adapter==0.1.6
+boto3==1.35.67
+botocore==1.35.67
+jmespath==1.0.1
+paho-mqtt==2.1.0
+# picamera==1.13
+pyftdi==0.55.4
+pyserial==3.5
+python-dateutil==2.9.0.post0
+pyusb==1.2.1
+RPi.GPIO==0.7.1
+s3transfer==0.10.4
+six==1.16.0
+smbus2==0.5.0
+sysv-ipc==1.1.0
+typing_extensions==4.12.2
+urllib3==2.2.3
