@@ -20,7 +20,7 @@ SENSOR_DHT11 = Adafruit_DHT.DHT11
 # Define the GPIO pins for the sensors
 DHT22_PIN1 = 5  # GPIO pin for the first DHT22
 DHT22_PIN2 = 6  # GPIO pin for the second DHT22
-DHT11_PIN = 0   # GPIO pin for the DHT11
+DHT11_PIN  = 0   # GPIO pin for the DHT11
 
 WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
 WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
