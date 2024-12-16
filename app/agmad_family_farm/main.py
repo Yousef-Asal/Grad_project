@@ -57,28 +57,40 @@ def read_ph():
 
 def read_dht():
     # First DHT22 sensor
-    # dhtDevice1 = adafruit_dht.DHT22(board.D5)
-    # temperature_c = dhtDevice1.temperature
-    # humidity = dhtDevice1.humidity
-    # print("First DHT:")
-    # print(f"Temperature: {temperature_c:.1f}°C")
-    # print(f"Humidity: {humidity:.1f}%")
-    # print("*****************")
+    try:
+        dhtDevice1 = adafruit_dht.DHT22(board.D5)
+        temperature_c = dhtDevice1.temperature
+        humidity = dhtDevice1.humidity
+        print("First DHT:")
+        print(f"Temperature: {temperature_c:.1f}°C")
+        print(f"Humidity: {humidity:.1f}%")
+        print("*****************")
+    except RuntimeError as error:
+    # Handle reading errors (common with DHT sensors)
+        print(f"Error reading DHT1 sensor: {error}")
     # second DHT22 sensor
-    dhtDevice2 = adafruit_dht.DHT22(board.D13)
-    temperature_c = dhtDevice2.temperature
-    humidity = dhtDevice2.humidity
-    print("Second DHT:")
-    print(f"Temperature: {temperature_c:.1f}°C")
-    print(f"Humidity: {humidity:.1f}%")
-    print("*****************")
+    try:
+        dhtDevice2 = adafruit_dht.DHT22(board.D13)
+        temperature_c = dhtDevice2.temperature
+        humidity = dhtDevice2.humidity
+        print("Second DHT:")
+        print(f"Temperature: {temperature_c:.1f}°C")
+        print(f"Humidity: {humidity:.1f}%")
+        print("*****************")
+    except RuntimeError as error:
+    # Handle reading errors (common with DHT sensors)
+        print(f"Error reading DHT2 sensor: {error}")
     # DHT11 sensor
-    dhtDevice3 = adafruit_dht.DHT11(board.D0)
-    temperature_c = dhtDevice3.temperature
-    humidity = dhtDevice3.humidity
-    print("DHT11:")
-    print(f"Temperature: {temperature_c:.1f}°C")
-    print(f"Humidity: {humidity:.1f}%")
+    try:
+        dhtDevice3 = adafruit_dht.DHT11(board.D0)
+        temperature_c = dhtDevice3.temperature
+        humidity = dhtDevice3.humidity
+        print("DHT11:")
+        print(f"Temperature: {temperature_c:.1f}°C")
+        print(f"Humidity: {humidity:.1f}%")
+     except RuntimeError as error:
+    # Handle reading errors (common with DHT sensors)
+        print(f"Error reading DHT11 sensor: {error}")
     print("-------------------------------------------------------------------------------------------------")
 
 def read_laser():
