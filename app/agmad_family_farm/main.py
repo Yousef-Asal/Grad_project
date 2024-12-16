@@ -8,6 +8,8 @@ import smbus
 import time
 import Adafruit_DHT
 import board
+import digitalio
+from board import SCLK, MISO, MOSI, CE0
 import busio
 import adafruit_vl53l0x
 
@@ -26,6 +28,9 @@ WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
 WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
 GPIO.setmode(GPIO.BCM)
 
+spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
+cs = digitalio.DigitalInOut(CE0)
+mcp = MCP3008(spi, cs)
 
 def read_water_level():
     GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
@@ -40,6 +45,17 @@ def read_water_level():
     else:
         print("Water Level Sensor2: No water detected.")
     print("-------------------------------------------------------------------------------------------------")
+
+def read_adc(channel):
+    chan = AnalogIn(mcp, channel)
+    return chan.value
+
+# Read pH value
+def read_ph():
+    raw_value = read_adc(PH_SENSOR_CHANNEL)
+    ph_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
+    print(f"pH Sensor: pH={ph_value:.2f}")
+    return ph_value
 
 def read_dht():
     # First DHT22 sensor
@@ -159,7 +175,7 @@ try:
         print("\nReading sensors...")
         
         # Read DHT sensor
-        read_dht()
+        #read_dht()
         
         # Read Hall Effect sensor
         #read_hall()
@@ -171,7 +187,7 @@ try:
         #read_laser()
 
         # Read pH sensor
-        #read_ph()
+        read_ph()
         
         # Read temperature sensor
         #read_temperature()
