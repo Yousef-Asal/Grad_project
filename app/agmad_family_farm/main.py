@@ -16,7 +16,7 @@ from adafruit_mcp3xxx.mcp3008 import MCP3008
 from adafruit_mcp3xxx.analog_in import AnalogIn
 
 i2c = busio.I2C(board.SCL, board.SDA)
-#vl53 = adafruit_vl53l0x.VL53L0X(i2c)
+vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
 PH_SENSOR_CHANNEL = 1 # ADC channel for pH sensor
 
@@ -152,13 +152,13 @@ def read_light():
     ch2 = data2[1] * 256 + data2[0]
     ch3 = data3[1] * 256 + data3[0]
     # Output data to screen
-    print ("Semsor 1 Data")
+    print ("Sensor 1 Data")
     print ("Full Spectrum(IR + Visible) :%d lux" %ch0)
     print ("Infrared Value :%d lux" %ch1)
     print ("Visible Value :%d lux" %(ch0 - ch1))
     print("*****************")
     #------------------------------------------------------------------
-    print ("Semsor 2 Data")
+    print ("Sensor 2 Data")
     print ("Full Spectrum(IR + Visible) :%d lux" %ch2)
     print ("Infrared Value :%d lux" %ch3)
     print ("Visible Value :%d lux" %(ch2 - ch3))
@@ -168,7 +168,7 @@ try:
         print("\nReading sensors...")
         
         # Read DHT sensor
-        read_dht()
+        #read_dht()
         
         # Read Hall Effect sensor
         #read_hall()
@@ -177,10 +177,10 @@ try:
         #read_light()
         
         # Read Laser Sensor
-        #read_laser()
+        read_laser()
 
         # Read pH sensor
-        read_ph()
+        #read_ph()
         
         # Read temperature sensor
         #read_temperature()
