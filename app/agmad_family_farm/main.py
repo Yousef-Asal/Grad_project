@@ -3,17 +3,72 @@
 # TSL2561
 # This code is designed to work with the TSL2561_I2CS I2C Mini Module available from ControlEverything.com.
 # https://www.controleverything.com/content/Light?sku=TSL2561_I2CS#tabs-0-product_tabset-2
-
+import RPi.GPIO as GPIO
 import smbus
 import time
-
+import adafruit_dht
 import board
 import busio
-
 import adafruit_vl53l0x
 
 i2c = busio.I2C(board.SCL, board.SDA)
 vl53 = adafruit_vl53l0x.VL53L0X(i2c)
+
+
+dhtDevice22_1 = adafruit_dht.DHT22(board.D5)
+dhtDevice22_2 = adafruit_dht.DHT22(board.D6)
+dhtDevice11 = adafruit_dht.DHT11(board.D0)
+
+WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
+WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
+GPIO.setmode(GPIO.BCM)
+
+
+def read_water_level():
+    GPIO.setup(WATER_LEVEL_PIN1, GPIO.IN)
+    GPIO.setup(WATER_LEVEL_PIN2, GPIO.IN)
+    if GPIO.input(WATER_LEVEL_PIN1) == GPIO.HIGH:
+        print("Water Level Sensor1: Water detected!")
+    else:
+        print("Water Level Sensor1: No water detected.")
+    print("****************")
+    if GPIO.input(WATER_LEVEL_PIN2) == GPIO.HIGH:
+        print("Water Level Sensor2: Water detected!")
+    else:
+        print("Water Level Sensor2: No water detected.")
+    print("-------------------------------------------------------------------------------------------------")
+
+def read_dht():
+    temperature_c = dhtDevice22_1.temperature
+    temperature_f = temperature_c * (9 / 5) + 32
+    humidity = dhtDevice22_1.humidity
+    print("1. first dht22 data:")
+    print(
+        "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
+            temperature_f, temperature_c, humidity
+        )
+    )
+    print("*****************")
+    temperature_c = dhtDevice22_2.temperature
+    temperature_f = temperature_c * (9 / 5) + 32
+    humidity = dhtDevice22_2.humidity
+    print("2. second dht22 data:")
+    print(
+        "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
+            temperature_f, temperature_c, humidity
+        )
+    )
+    print("*****************")
+    temperature_c = dhtDevice11.temperature
+    temperature_f = temperature_c * (9 / 5) + 32
+    humidity = dhtDevice11.humidity
+    print("3. dht11 data:")
+    print(
+        "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
+            temperature_f, temperature_c, humidity
+        )
+    )
+    print("------------------------------------------------------------------")
 
 def read_laser():
     print("Laser Data:")
@@ -77,6 +132,7 @@ def read_light():
     print ("Full Spectrum(IR + Visible) :%d lux" %ch0)
     print ("Infrared Value :%d lux" %ch1)
     print ("Visible Value :%d lux" %(ch0 - ch1))
+    print("*****************")
     #------------------------------------------------------------------
     print ("Semsor 2 Data")
     print ("Full Spectrum(IR + Visible) :%d lux" %ch2)
@@ -88,7 +144,7 @@ try:
         print("\nReading sensors...")
         
         # Read DHT sensor
-        # read_dht()
+        read_dht()
         
         # Read Hall Effect sensor
         #read_hall()
@@ -106,7 +162,7 @@ try:
         #read_temperature()
         
         # Read water level sensor
-        #read_water_level()
+        read_water_level()
         
         time.sleep(4)  # Delay between readings
 
