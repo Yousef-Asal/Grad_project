@@ -86,11 +86,11 @@
 # print('Raw ADC Value: ', chan.value)
 # print('ADC Voltage: ' + str(chan.voltage) + 'V')
 #-----------------------------------------------------------------------------
-import adafruit_dht
+import Adafruit_DHT
 import board
 
 # Initialize the DHT22 sensor (use the correct GPIO pin)
-dhtDevice = adafruit_dht.DHT22(board.D5)  # Replace D4 with your GPIO pin
+dhtDevice = Adafruit_DHT.DHT22(board.D5)  # Replace D4 with your GPIO pin
 
 try:
     # Get temperature and humidity readings
