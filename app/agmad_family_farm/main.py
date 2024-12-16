@@ -18,6 +18,9 @@ from adafruit_mcp3xxx.analog_in import AnalogIn
 i2c = busio.I2C(board.SCL, board.SDA)
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
+PH_SENSOR_CHANNEL = 0 # ADC channel for pH sensor
+
+
 SENSOR_DHT22 = Adafruit_DHT.DHT22
 SENSOR_DHT11 = Adafruit_DHT.DHT11
 
