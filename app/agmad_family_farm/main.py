@@ -6,7 +6,7 @@
 import RPi.GPIO as GPIO
 import smbus
 import time
-import adafruit_dht
+import Adafruit_DHT
 import board
 import busio
 import adafruit_vl53l0x
@@ -15,9 +15,9 @@ i2c = busio.I2C(board.SCL, board.SDA)
 vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
 
-dhtDevice22_1 = adafruit_dht.DHT22(board.D5)
-dhtDevice22_2 = adafruit_dht.DHT22(board.D6)
-dhtDevice11 = adafruit_dht.DHT11(board.D0)
+dhtDevice22_1 = Adafruit_DHT.DHT22(board.D5)
+dhtDevice22_2 = Adafruit_DHT.DHT22(board.D6)
+dhtDevice11 = Adafruit_DHT.DHT11(board.D0)
 
 WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
 WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
