@@ -14,7 +14,7 @@
 import Adafruit_DHT
 
 SENSOR = Adafruit_DHT.DHT22
-PIN = 4  # Replace with your GPIO pin
+PIN = 6  # Replace with your GPIO pin
 
 humidity, temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
 if humidity is not None and temperature is not None:
