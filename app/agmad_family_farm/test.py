@@ -15,7 +15,7 @@ import Adafruit_DHT as dht
 from time import sleep
 
 # Set the GPIO pin connected to the DHT sensor
-DHT_PIN = 0
+DHT_PIN = 4
 
 while True:
     # Read temperature and humidity data from the DHT sensor
