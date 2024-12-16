@@ -7,7 +7,6 @@ import RPi.GPIO as GPIO
 import smbus
 import time
 import Adafruit_DHT
-import adafruit_dht
 import board
 import busio
 import adafruit_vl53l0x
