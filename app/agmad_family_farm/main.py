@@ -88,7 +88,7 @@ def read_dht():
         print("DHT11:")
         print(f"Temperature: {temperature_c:.1f}°C")
         print(f"Humidity: {humidity:.1f}%")
-     except RuntimeError as error:
+    except RuntimeError as error:
     # Handle reading errors (common with DHT sensors)
         print(f"Error reading DHT11 sensor: {error}")
     print("-------------------------------------------------------------------------------------------------")
