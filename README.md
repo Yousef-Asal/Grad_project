@@ -10,6 +10,8 @@ docker build -t our_family_farm .
 docker run --rm -it our_family_farm
 ```
 
-
-
 **note : متنساش تدعى قبل ما تشتغل عشان ميفرقعش فوشنا**
+
+python3-smbus
+
+libi2c-dev
