@@ -28,14 +28,14 @@ GPIO.setmode(GPIO.BCM)
 
 
 def read_water_level():
-    GPIO.setup(WATER_LEVEL_PIN1, GPIO.IN)
-    GPIO.setup(WATER_LEVEL_PIN2, GPIO.IN)
-    if GPIO.input(WATER_LEVEL_PIN1) == GPIO.HIGH:
+    GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
+    GPIO.setup(WATER_LEVEL2_PIN, GPIO.IN)
+    if GPIO.input(WATER_LEVEL1_PIN) == GPIO.HIGH:
         print("Water Level Sensor1: Water detected!")
     else:
         print("Water Level Sensor1: No water detected.")
     print("****************")
-    if GPIO.input(WATER_LEVEL_PIN2) == GPIO.HIGH:
+    if GPIO.input(WATER_LEVEL2_PIN) == GPIO.HIGH:
         print("Water Level Sensor2: Water detected!")
     else:
         print("Water Level Sensor2: No water detected.")
