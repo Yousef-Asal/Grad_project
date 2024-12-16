@@ -27,9 +27,9 @@ WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
 GPIO.setmode(GPIO.BCM)
 
 # Initialize the DHT22 sensor on a specific pin
-dht22_sensor1 = Adafruit_dht.DHT22(board.D5)
-dht22_sensor2 = Adafruit_dht.DHT22(board.D6)
-dht22_sensor2 = Adafruit_dht.DHT11(board.D0)
+dht22_sensor1 = Adafruit_DHT.DHT22(board.D5)
+dht22_sensor2 = Adafruit_DHT.DHT22(board.D6)
+dht22_sensor2 = Adafruit_DHT.DHT11(board.D0)
 
 def read_water_level():
     GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
