@@ -11,21 +11,21 @@
 # except Exception as e:
 #     print("Error:", e)
 
-import Adafruit_DHT as dht
-from time import sleep
+# import Adafruit_DHT as dht
+# from time import sleep
 
-# Set the GPIO pin connected to the DHT sensor
-DHT_PIN = 4
+# # Set the GPIO pin connected to the DHT sensor
+# DHT_PIN = 4
 
-while True:
-    # Read temperature and humidity data from the DHT sensor
-    humidity, temperature = dht.read_retry(dht.DHT11, DHT_PIN)
+# while True:
+#     # Read temperature and humidity data from the DHT sensor
+#     humidity, temperature = dht.read_retry(dht.DHT11, DHT_PIN)
     
-    # Print the temperature and humidity data
-    print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(temperature, humidity))
+#     # Print the temperature and humidity data
+#     print('Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(temperature, humidity))
     
-    # Wait 5 seconds before reading again
-    sleep(5)
+#     # Wait 5 seconds before reading again
+#     sleep(5)
 
     # SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
