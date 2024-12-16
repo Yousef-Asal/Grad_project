@@ -12,7 +12,7 @@ import busio
 import adafruit_vl53l0x
 
 i2c = busio.I2C(board.SCL, board.SDA)
-vl53 = adafruit_vl53l0x.VL53L0X(i2c)
+#vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
 
 dhtDevice22_1 = Adafruit_DHT.DHT22(board.D5)
@@ -150,10 +150,10 @@ try:
         #read_hall()
         
         # Read Light sensor
-        read_light()
+        #read_light()
         
         # Read Laser Sensor
-        read_laser()
+        #read_laser()
 
         # Read pH sensor
         #read_ph()
