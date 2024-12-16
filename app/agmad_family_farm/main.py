@@ -65,7 +65,7 @@ def read_dht():
     print(f"Humidity: {humidity:.1f}%")
     print("*****************")
     # second DHT22 sensor
-    dhtDevice2 = adafruit_dht.DHT22(board.D6)
+    dhtDevice2 = adafruit_dht.DHT22(board.D13)
     temperature_c = dhtDevice2.temperature
     humidity = dhtDevice2.humidity
     print("Second DHT:")
