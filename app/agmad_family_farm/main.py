@@ -16,7 +16,7 @@ from adafruit_mcp3xxx.mcp3008 import MCP3008
 from adafruit_mcp3xxx.analog_in import AnalogIn
 
 i2c = busio.I2C(board.SCL, board.SDA)
-vl53 = adafruit_vl53l0x.VL53L0X(i2c)
+#vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
 PH_SENSOR_CHANNEL = 1 # ADC channel for pH sensor
 
