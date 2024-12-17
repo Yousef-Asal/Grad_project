@@ -101,7 +101,7 @@ def read_laser():
 
 def read_light():
     # Get I2C bus
-    bus = smbus.SMBus(6)
+    bus = smbus.SMBus(1)
 
     # TSL2561 address, 0x39(57)
     # Select control register, 0x00(00) with command register, 0x80(128)
@@ -174,10 +174,10 @@ try:
         #read_hall()
         
         # Read Light sensor
-        #read_light()
+        read_light()
         
         # Read Laser Sensor
-        read_laser()
+        #read_laser()
 
         # Read pH sensor
         #read_ph()
