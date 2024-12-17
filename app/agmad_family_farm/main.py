@@ -163,7 +163,7 @@ def read_light():
     print ("Full Spectrum(IR + Visible) :%d lux" %ch2)
     print ("Infrared Value :%d lux" %ch3)
     print ("Visible Value :%d lux" %(ch2 - ch3))
-    print("-----------------------------------------------------------------")
+    print("---------------------------------------------------------------------------------------------")
 try:
     while True:
         print("*******************Reading sensors*****************************\n")

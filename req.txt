@@ -1,0 +1,3 @@
+adafruit-board-toolkit
+adafruit-circuitpython-dht
+adafruit-circuitpython-mcp3xxx
