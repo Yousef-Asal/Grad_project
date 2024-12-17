@@ -29,6 +29,8 @@ cs = digitalio.DigitalInOut(CE0)
 mcp = MCP3008(spi, cs)
 
 dhtDevice1 = adafruit_dht.DHT22(board.D5)
+dhtDevice2 = adafruit_dht.DHT22(board.D13)
+dhtDevice3 = adafruit_dht.DHT11(board.D0)
 
 def read_water_level():
     GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
@@ -71,7 +73,6 @@ def read_dht():
         print(f"Error reading DHT1 sensor: {error}")
     # second DHT22 sensor
     try:
-        dhtDevice2 = adafruit_dht.DHT22(board.D13)
         temperature_c = dhtDevice2.temperature
         humidity = dhtDevice2.humidity
         print("Second DHT:")
@@ -83,7 +84,6 @@ def read_dht():
         print(f"Error reading DHT2 sensor: {error}")
     # DHT11 sensor
     try:
-        dhtDevice3 = adafruit_dht.DHT11(board.D0)
         temperature_c = dhtDevice3.temperature
         humidity = dhtDevice3.humidity
         print("DHT11:")
