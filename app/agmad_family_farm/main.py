@@ -168,7 +168,7 @@ try:
         print("\nReading sensors...")
         
         # Read DHT sensor
-        #read_dht()
+        read_dht()
         
         # Read Hall Effect sensor
         #read_hall()
