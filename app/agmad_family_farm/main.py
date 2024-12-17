@@ -186,7 +186,7 @@ try:
         #read_temperature()
         
         # Read water level sensor
-        #read_water_level()
+        read_water_level()
         
         time.sleep(4)  # Delay between readings
 
