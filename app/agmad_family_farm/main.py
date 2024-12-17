@@ -28,6 +28,8 @@ spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
 cs = digitalio.DigitalInOut(CE0)
 mcp = MCP3008(spi, cs)
 
+dhtDevice1 = adafruit_dht.DHT22(board.D5)
+
 def read_water_level():
     GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
     GPIO.setup(WATER_LEVEL2_PIN, GPIO.IN)
@@ -58,7 +60,6 @@ def read_ph():
 def read_dht():
     # First DHT22 sensor
     try:
-        dhtDevice1 = adafruit_dht.DHT22(board.D5)
         temperature_c = dhtDevice1.temperature
         humidity = dhtDevice1.humidity
         print("First DHT:")
