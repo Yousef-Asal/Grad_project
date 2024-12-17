@@ -181,7 +181,7 @@ try:
         #read_laser()
 
         # Read pH sensor
-        #read_ph()
+        read_ph()
         
         # Read temperature sensor
         #read_temperature()
