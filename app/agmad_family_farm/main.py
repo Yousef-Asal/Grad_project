@@ -166,7 +166,7 @@ def read_light():
     print("-----------------------------------------------------------------")
 try:
     while True:
-        print("\nReading sensors...")
+        print("*******************Reading sensors*****************************\n")
         
         # Read DHT sensor
         read_dht()
