@@ -303,7 +303,7 @@ import time
 import serial
 
 
-SERIAL_PORT = "/dev/serial1"
+SERIAL_PORT = "/dev/serial0"
 BAUD_RATE = 9600
 
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
