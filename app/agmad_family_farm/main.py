@@ -75,7 +75,7 @@ def read_ph():
     return ph_value
 def read_tds():
     raw_value = read_adc(TDS_SENSOR_CHANNEL)
-    tds_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
+    tds_value = raw_value * (1000 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
     print(f"TDS Sensor: tds={tds_value:.2f}")
     print("-------------------------------------------------------------------------------------------------")
 
