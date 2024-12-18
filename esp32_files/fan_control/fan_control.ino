@@ -15,9 +15,9 @@ void setup() {
   // ledcAttachPin(PWM_PIN, 0); // Attach PWM to PWM_PIN
 
   // // Initialize UART communication
-  // MySerial.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17
-  // Serial.begin(115200);
-  // Serial.println("ESP32 UART Fan Controller Started");
+  MySerial.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17
+  Serial.begin(115200);
+  Serial.println("ESP32 UART Fan Controller Started");
 
   // // Default fan state: stopped
   // ledcWrite(0, 0);  // Fan speed 0

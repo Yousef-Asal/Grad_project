@@ -311,6 +311,7 @@ time.sleep(2)  # Allow time for serial to initialize
 
 def send_command(command):
     ser.write(f"{command}\n".encode("utf-8"))
+    print("raspberry send a command")
     time.sleep(0.5)  # Wait for response
     response = ser.readline().decode("utf-8").strip()
     print(f"ESP32 Response: {response}")
