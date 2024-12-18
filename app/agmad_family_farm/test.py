@@ -310,10 +310,10 @@ ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 time.sleep(2)  # Allow time for serial to initialize
 
 def send_command(command):
-    ser.write(command.encode("utf-8"))
+    ser.write(command)
     print("raspberry send a command")
     time.sleep(0.5)  # Wait for response
-    response = ser.readline().decode("utf-8").strip()
+    response = ser.readline()
     print(f"ESP32 Response: {response}")
     
 def read_light():
