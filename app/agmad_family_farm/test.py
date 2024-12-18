@@ -310,10 +310,10 @@ ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 time.sleep(2)  # Allow time for serial to initialize
 
 def send_command(command):
-    ser.write(command)
+    ser.write(f"{command}\n".encode("utf-8"))
     print("raspberry send a command")
     time.sleep(0.5)  # Wait for response
-    response = ser.readline()
+    response = ser.readline().decode("utf-8").strip()
     print(f"ESP32 Response: {response}")
     
 def read_light():
@@ -354,8 +354,8 @@ def read_light():
 
     if ch0 > 100:
         print("Water level HIGH: Increasing fan speed & forward direction")
-        send_command(12)  # Set fan direction to forward
-        send_command(200)  # Set fan speed (e.g., 200/255)
+        send_command("FAN_FORWARD")  # Set fan direction to forward
+        send_command("FAN_SPEED 200")  # Set fan speed (e.g., 200/255)
         time.sleep(5)  # Run fan for 5 seconds
 
         print("Reversing fan direction at low speed")
@@ -364,7 +364,7 @@ def read_light():
         time.sleep(5)  # Run fan in reverse for 5 seconds
 
         print("Stopping fan")
-        send_command([10,11])
+        send_command("FAN_STOP")
         time.sleep(10)  # Delay before next check
     else:
         print("Water level NORMAL: Fan remains OFF")
