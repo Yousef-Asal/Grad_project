@@ -352,7 +352,7 @@ def read_light():
     print ("Visible Value :%d lux" %(ch0 - ch1))
     print("*****************")
 
-    if ch0 > 800:
+    if ch0 > 100:
         print("Water level HIGH: Increasing fan speed & forward direction")
         send_command("FAN_FORWARD")  # Set fan direction to forward
         send_command("FAN_SPEED 200")  # Set fan speed (e.g., 200/255)

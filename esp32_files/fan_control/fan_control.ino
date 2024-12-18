@@ -26,11 +26,11 @@ void setup() {
 
 void loop() {
   // Listen for commands from Raspberry Pi
+  Serial.println(MySerial.available());
   if (MySerial.available() > 0) {
     String command = MySerial.readStringUntil('\n');
     command.trim();
     Serial.println("Received command: " + command);
-    delay(1000);
     // if (command.startsWith("FAN_SPEED")) {
     //   int speed = command.substring(10).toInt(); // Extract speed value
     //   speed = constrain(speed, 0, 255); // Constrain speed to 0-255
@@ -58,4 +58,5 @@ void loop() {
     //   Serial.println("Unknown command");
     //   MySerial.println("ERROR");
     }
+  delay(1000);
   }
