@@ -32,7 +32,8 @@ def send_command(command):
 i2c = busio.I2C(board.SCL, board.SDA)
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
-PH_SENSOR_CHANNEL = 1 # ADC channel for pH sensor
+PH_SENSOR_CHANNEL = 0 # ADC channel for pH sensor
+TDS_SENSOR_CHANNEL = 1
 
 WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
 WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
@@ -67,6 +68,13 @@ def read_adc(channel):
 # Read pH value
 def read_ph():
     raw_value = read_adc(PH_SENSOR_CHANNEL)
+    ph_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
+    print(f"pH Sensor: pH={ph_value:.2f}")
+    print("-------------------------------------------------------------------------------------------------")
+
+    return ph_value
+def read_tds():
+    raw_value = read_adc(TDS_SENSOR_CHANNEL)
     ph_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
     print(f"pH Sensor: pH={ph_value:.2f}")
     print("-------------------------------------------------------------------------------------------------")
@@ -207,6 +215,8 @@ try:
         # Read Light sensor
         read_light()
         
+        # Read Light sensor
+        read_tds()
         # Read Laser Sensor
         #read_laser()
 
