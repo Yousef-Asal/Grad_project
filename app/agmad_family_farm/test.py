@@ -300,8 +300,21 @@
 import smbus
 import RPi.GPIO as GPIO
 import time
+import serial
 
 
+SERIAL_PORT = "/dev/serial0"
+BAUD_RATE = 9600
+
+ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+time.sleep(2)  # Allow time for serial to initialize
+
+def send_command(command):
+    ser.write(f"{command}\n".encode("utf-8"))
+    time.sleep(0.5)  # Wait for response
+    response = ser.readline().decode("utf-8").strip()
+    print(f"ESP32 Response: {response}")
+    
 def read_light():
     # Get I2C bus
     bus = smbus.SMBus(1)
@@ -337,30 +350,31 @@ def read_light():
     print ("Infrared Value :%d lux" %ch1)
     print ("Visible Value :%d lux" %(ch0 - ch1))
     print("*****************")
-    # try:
-    #     while True:
-    #         if GPIO.input(ch0) > 800:
-    #             print("Water level HIGH: Increasing fan speed & forward direction")
-    #             send_command("FAN_FORWARD")  # Set fan direction to forward
-    #             send_command("FAN_SPEED 200")  # Set fan speed (e.g., 200/255)
-    #             time.sleep(5)  # Run fan for 5 seconds
+    try:
+        while True:
+            if GPIO.input(ch0) > 800:
+                print("Water level HIGH: Increasing fan speed & forward direction")
+                send_command("FAN_FORWARD")  # Set fan direction to forward
+                send_command("FAN_SPEED 200")  # Set fan speed (e.g., 200/255)
+                time.sleep(5)  # Run fan for 5 seconds
 
-    #             print("Reversing fan direction at low speed")
-    #             send_command("FAN_REVERSE")
-    #             send_command("FAN_SPEED 100")  # Reduce fan speed
-    #             time.sleep(5)  # Run fan in reverse for 5 seconds
+                print("Reversing fan direction at low speed")
+                send_command("FAN_REVERSE")
+                send_command("FAN_SPEED 100")  # Reduce fan speed
+                time.sleep(5)  # Run fan in reverse for 5 seconds
 
-    #             print("Stopping fan")
-    #             send_command("FAN_STOP")
-    #             time.sleep(10)  # Delay before next check
-    #         else:
-    #             print("Water level NORMAL: Fan remains OFF")
-    #             send_command("FAN_STOP")
-    #         time.sleep(2)  # Check water level every 2 seconds
-    #         #------------------------------------------------------------------
-    # except KeyboardInterrupt:
-    #     print("Exiting...")
-    # finally:
-    #     GPIO.cleanup()
-        
+                print("Stopping fan")
+                send_command("FAN_STOP")
+                time.sleep(10)  # Delay before next check
+            else:
+                print("Water level NORMAL: Fan remains OFF")
+                send_command("FAN_STOP")
+            time.sleep(2)  # Check water level every 2 seconds
+            #------------------------------------------------------------------
+    except KeyboardInterrupt:
+        print("Exiting...")
+    finally:
+        GPIO.cleanup()
+        ser.close()
+
 read_light()
