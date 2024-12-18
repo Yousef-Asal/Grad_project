@@ -14,20 +14,6 @@ import busio
 import adafruit_vl53l0x
 from adafruit_mcp3xxx.mcp3008 import MCP3008
 from adafruit_mcp3xxx.analog_in import AnalogIn
-import serial
-
-SERIAL_PORT = "/dev/serial0"
-BAUD_RATE = 9600
-
-ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-time.sleep(2)  # Allow time for serial to initialize
-
-def send_command(command):
-    ser.write(f"{command}\n".encode("utf-8"))
-    print("raspberry send a command")
-    time.sleep(0.5)  # Wait for response
-    response = ser.readline().decode("utf-8").strip()
-    print(f"ESP32 Response: {response}")
 
 i2c = busio.I2C(board.SCL, board.SDA)
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
@@ -178,11 +164,6 @@ def read_light():
     print ("Infrared Value :%d lux" %ch3)
     print ("Visible Value :%d lux" %(ch2 - ch3))
     print("---------------------------------------------------------------------------------------------")
-
-################################################################################################################
-#**************************************************Actuators***************************************************#
-def control_fans(plate,direction,speed):
-    
 try:
     while True:
         print("*******************Reading sensors*****************************\n")

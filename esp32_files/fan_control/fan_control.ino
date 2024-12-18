@@ -9,10 +9,14 @@ void setup() {
   // Pin setup
   pinMode(PWM_PIN, OUTPUT);
   pinMode(DIR_PIN, OUTPUT);
+  
+  int freq = 25000
+  int resolution = 8
 
   // Initialize PWM for fan speed
   // ledcSetup(0, 25000, 8);  // Channel 0, 25 kHz frequency, 8-bit resolution
   // ledcAttachPin(PWM_PIN, 0); // Attach PWM to PWM_PIN
+  bool ledcAttach(uint8_t PWM_PIN, uint32_t freq, uint8_t resolution);
 
   // // Initialize UART communication
   MySerial.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17
