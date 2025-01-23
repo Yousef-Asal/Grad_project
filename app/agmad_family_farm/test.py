@@ -1,5 +1,5 @@
-# import board
-# import busio
+import board
+import busio
 import adafruit_vl53l0x
 
 i2c = busio.I2C(board.SCL, board.SDA)
