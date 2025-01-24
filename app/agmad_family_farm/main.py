@@ -15,118 +15,88 @@ import adafruit_vl53l0x
 from adafruit_mcp3xxx.mcp3008 import MCP3008
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import serial
+import requests
+import json
 
 SERIAL_PORT = "/dev/serial0"
 BAUD_RATE = 9600
-
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 time.sleep(2)  # Allow time for serial to initialize
-
-def send_command(command):
-    ser.write(f"{command}\n".encode("utf-8"))
-    print("raspberry send a command")
-    time.sleep(0.5)  # Wait for response
-    response = ser.readline().decode("utf-8").strip()
-    print(f"ESP32 Response: {response}")
 
 i2c = busio.I2C(board.SCL, board.SDA)
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
-PH_SENSOR_CHANNEL = 0 # ADC channel for pH sensor
-TDS_SENSOR_CHANNEL = 1
-
-WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
-WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
+water_pin = 20 # GPIO pin for Digital Water Level Sensor
+nutrient_pin = 21 # GPIO pin for Digital Water Level Sensor
 GPIO.setmode(GPIO.BCM)
 
-spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
-cs = digitalio.DigitalInOut(CE0)
-mcp = MCP3008(spi, cs)
 
-dhtDevice1 = adafruit_dht.DHT22(board.D5)
-dhtDevice2 = adafruit_dht.DHT22(board.D13)
-dhtDevice3 = adafruit_dht.DHT11(board.D0)
 
-def read_water_level():
-    GPIO.setup(WATER_LEVEL1_PIN, GPIO.IN)
-    GPIO.setup(WATER_LEVEL2_PIN, GPIO.IN)
-    if GPIO.input(WATER_LEVEL1_PIN) == GPIO.HIGH:
-        print("Water Level Sensor1: Water detected!")
-    else:
-        print("Water Level Sensor1: No water detected.")
-    print("****************")
-    if GPIO.input(WATER_LEVEL2_PIN) == GPIO.HIGH:
-        print("Water Level Sensor2: Water detected!")
-    else:
-        print("Water Level Sensor2: No water detected.")
-    print("-------------------------------------------------------------------------------------------------")
+drain_valve_state = 0
+water_valve_state = 0
+nutrients_valve_state = 0
+plate1_open_valve_state = 0
+plate1_drain_valve_state = 0
+plate2_open_valve_state = 0
+plate2_drain_valve_state = 0
+pump_state = 0
+plate1_heater_state = 0
+plate2_heater_state = 0
+plate1_fan_state = 0
+plate2_fan_state = 0
+led_line1_state = 0
+led_line2_state = 0
+led_line3_state = 0
 
-def read_adc(channel):
-    chan = AnalogIn(mcp, channel)
-    return chan.value
 
-# Read pH value
-def read_ph():
-    raw_value = read_adc(PH_SENSOR_CHANNEL)
-    ph_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
-    print(f"pH Sensor: pH={ph_value:.2f}")
-    print("-------------------------------------------------------------------------------------------------")
 
-    return ph_value
-def read_tds():
-    raw_value = read_adc(TDS_SENSOR_CHANNEL)
-    tds_value = raw_value * (1000 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
-    tds_value = ((tds_value*2)/1000)
-    print(f"TDS Sensor: tds={tds_value:.2f}")
-    print("-------------------------------------------------------------------------------------------------")
+################################################################################################################
+#**************************************************Sensors***************************************************#
 
-    return tds_value
+#dht sensors readings
+plate1_dht = adafruit_dht.DHT22(board.D5)
+plate2_dht = adafruit_dht.DHT22(board.D13)
+pcb_dht = adafruit_dht.DHT11(board.D0)
 
-def read_dht():
+def read_plate_temp(plate):
     # First DHT22 sensor
+    dht = plate1_dht if plate == "plate1" else plate2_dht
     try:
-        temperature_c = dhtDevice1.temperature
-        humidity = dhtDevice1.humidity
-        print("First DHT:")
+        temperature_c = dht.temperature
+        humidity = dht.humidity
+        print(f"{plate}DHT:")
         print(f"Temperature: {temperature_c:.1f}°C")
         print(f"Humidity: {humidity:.1f}%")
         print("*****************")
+        return {"temp": temperature_c,"humidity": humidity}
     except RuntimeError as error:
     # Handle reading errors (common with DHT sensors)
-        print(f"Error reading DHT1 sensor: {error}")
+        print(f"Error reading {plate} DHT sensor: {error}")
+        return {"temp": null,"humidity": null}
     # second DHT22 sensor
-    try:
-        temperature_c = dhtDevice2.temperature
-        humidity = dhtDevice2.humidity
-        print("Second DHT:")
-        print(f"Temperature: {temperature_c:.1f}°C")
-        print(f"Humidity: {humidity:.1f}%")
-        print("*****************")
-    except RuntimeError as error:
-    # Handle reading errors (common with DHT sensors)
-        print(f"Error reading DHT2 sensor: {error}")
-    # DHT11 sensor
-    try:
-        temperature_c = dhtDevice3.temperature
-        humidity = dhtDevice3.humidity
-        print("DHT11:")
-        print(f"Temperature: {temperature_c:.1f}°C")
-        print(f"Humidity: {humidity:.1f}%")
-    except RuntimeError as error:
-    # Handle reading errors (common with DHT sensors)
-        print(f"Error reading DHT11 sensor: {error}")
+
     print("-------------------------------------------------------------------------------------------------")
 
-def read_laser():
-    print("Laser Data:")
-    print("Range: {0}mm".format(vl53.range))
-    print("-----------------------------------------------------------------")
+def read_pcb_temp():
+    try:
+        temperature_c = pcb_dht.temperature
+        humidity = pcb_dht.humidity
+        print("pcb DHT:")
+        print(f"Temperature: {temperature_c:.1f}°C")
+        print(f"Humidity: {humidity:.1f}%")
+        return {"temp": temperature_c,"humidity": humidity}
 
+    except RuntimeError as error:
+    # Handle reading errors (common with DHT sensors)
+        print(f"Error reading pcb dht sensor: {error}")
+        return {"temp": null,"humidity": null}
 
-def read_light():
+#**********************************************************#
+
+def read_light(plate):
     # Get I2C bus
-    #bus = smbus.SMBus(6)
-    bus = smbus.SMBus(1)
+    # buses
+    bus = smbus.SMBus((5)) if plate == "plate1" else smbus.SMBus((6))
 
     # TSL2561 address, 0x39(57)
     # Select control register, 0x00(00) with command register, 0x80(128)
@@ -151,81 +121,187 @@ def read_light():
     # Convert the data
     ch0 = data[1] * 256 + data[0]
     ch1 = data1[1] * 256 + data1[0]
-    if ch0 > 800:
-        control_fans(1,1,200)
+
     #--------------------------------------------------------------
-    # bus2 = smbus.SMBus(5)
 
-    # # TSL2561 address, 0x39(57)
-    # # Select control register, 0x00(00) with command register, 0x80(128)
-    # #		0x03(03)	Power ON mode
-    # bus2.write_byte_data(0x39, 0x00 | 0x80, 0x03)
-    # # TSL2561 address, 0x39(57)
-    # # Select timing register, 0x01(01) with command register, 0x80(128)
-    # #		0x02(02)	Nominal integration time = 402ms
-    # bus2.write_byte_data(0x39, 0x01 | 0x80, 0x02)
-
-    # time.sleep(0.1)
-
-    # # Read data back from 0x0C(12) with command register, 0x80(128), 2 bytes
-    # # ch0 LSB, ch0 MSB
-    # data2 = bus2.read_i2c_block_data(0x39, 0x0C | 0x80, 2)
-
-    # # Read data back from 0x0E(14) with command register, 0x80(128), 2 bytes
-    # # ch1 LSB, ch1 MSB
-    # data3 = bus2.read_i2c_block_data(0x39, 0x0E | 0x80, 2)
-
-    # # Convert the data
-    # ch2 = data2[1] * 256 + data2[0]
-    # ch3 = data3[1] * 256 + data3[0]
     # Output data to screen
-    print ("Sensor 1 Data")
+    print (f"{plate} Data")
     print ("Full Spectrum(IR + Visible) :%d lux" %ch0)
     print ("Infrared Value :%d lux" %ch1)
     print ("Visible Value :%d lux" %(ch0 - ch1))
     print("*****************")
-    #------------------------------------------------------------------
-    # print ("Sensor 2 Data")
-    # print ("Full Spectrum(IR + Visible) :%d lux" %ch2)
-    # print ("Infrared Value :%d lux" %ch3)
-    # print ("Visible Value :%d lux" %(ch2 - ch3))
-    print("---------------------------------------------------------------------------------------------")
+    return {"full_spectrum": ch0,"ir":ch1,"visible":(ch0 - ch1)}
+
+#*******************************************************************#
+
+# Read TDS value
+TDS_SENSOR_CHANNEL = 1
+
+def read_tds():
+    raw_value = read_adc(TDS_SENSOR_CHANNEL)
+    tds_value = raw_value * (1000 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
+    ec_value = ((tds_value*2)/1000)
+    print(f"TDS Sensor: ec={ec_value:.2f}")
+    print("-------------------------------------------------------------------------------------------------")
+    return ec_value
+
+#********************************************************************#
+
+# Read pH value
+PH_SENSOR_CHANNEL = 0 # ADC channel for pH sensor
+
+def read_ph():
+    raw_value = read_adc(PH_SENSOR_CHANNEL)
+    ph_value = raw_value * (14 / 65535)  # Adjust for 10-bit (65535 is for 16-bit, adjust based on your ADC)
+    print(f"pH Sensor: pH={ph_value:.2f}")
+    print("-------------------------------------------------------------------------------------------------")
+    return ph_value
+
+#*********************************************************************#
+
+#Water level sensors
+def read_water_level(tank):
+    pin = 20 if tank == "water" else 21
+    GPIO.setup(pin, GPIO.IN)
+    if GPIO.input(pin) == GPIO.HIGH:
+        print("Water Level Sensor1: Water detected!")
+        return 1
+    else:
+        print("Water Level Sensor1: Water not detected!")
+        return 0
+    
+#************************************************************************#
+
+def read_laser():
+    print("Laser Data:")
+    print("Range: {0}mm".format(vl53.range))
+    print("-----------------------------------------------------------------")
+
+#//////////////////////////////////////////////////////////////////////
+
+#read the analog signal from mcp
+spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
+cs = digitalio.DigitalInOut(CE0)
+mcp = MCP3008(spi, cs)
+
+def read_adc(channel):
+    chan = AnalogIn(mcp, channel)
+    return chan.value
+
+#///////////////////////////////////////////////////////////////////////
+
 
 ################################################################################################################
 #**************************************************Actuators***************************************************#
-def control_fans(plate,direction,speed):
+#to send a command to the esp
+def send_command():
+    command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
+    ser.write(f"{command}\n".encode("utf-8"))
+    print("raspberry send a command")
+    time.sleep(0.5)  # Wait for response
+    response = ser.readline().decode("utf-8").strip()
+    print(f"ESP32 Response: {response}")
 
-    print("Water level HIGH: Increasing fan speed & forward direction")
-    send_command("FAN_SPEED 200")  # Set fan speed (e.g., 200/255)
-    time.sleep(10)  # Run fan for 5 seconds
+# def control_fans(plate,direction,speed):
+#     print("Water level HIGH: Increasing fan speed & forward direction")
+#     send_command("FAN_SPEED 200")  # Set fan speed (e.g., 200/255)
+#     time.sleep(10)  # Run fan for 5 seconds
+#     print("Stopping fan")
+#     send_command("FAN_STOP")
+#     time.sleep(10)  # Delay before next check
 
-    print("Stopping fan")
-    send_command("FAN_STOP")
-    time.sleep(10)  # Delay before next check
+################################################################################################################
+#*************************************************AWS**********************************************************#
+# Your API Gateway link
+def send_data():
+    api_url = "https://wdy1m5yd7i.execute-api.us-east-1.amazonaws.com/RPI/RPI_DATA"
 
+    plate1_temp = read_plate_temp("plate1")
+    plate2_temp = read_plate_temp("plate2")
+    plate1_light = read_light("plate1")
+    plate2_light = read_light("plate2")
+    ec = read_tds()
+    ph = read_ph()
+    water_level = read_water_level("water")
+    nutrient_level = read_water_level("nutrients")
+
+
+
+
+    # Data to send
+    sensors = {
+        "plate1_temp": plate1_temp["temp"],
+        "plate1_humidity": plate1_temp["humidity"],
+        "plate2_temp": plate2_temp["temp"],
+        "plate2_humidity": plate2_temp["humidity"],
+        "plate1_light_visible": plate1_light["visible"],
+        "plate2_light_visible": plate1_light["visible"],  # Assuming plate2 uses the same value for now
+        "ec": ec,
+        "ph": ph,
+        "water_level": water_level,
+        "nutrient_level": nutrient_level
+    }
+    actuators = {
+        "drain_valve_state": 0,
+        "water_valve_state": 0,
+        "nutrients_valve_state": 0,
+        "plate1_open_valve_state": 0,
+        "plate1_drain_valve_state": 0,
+        "plate2_open_valve_state": 0,
+        "plate2_drain_valve_state": 0,
+        "pump_state": 0,
+        "plate1_heater_state": 0,
+        "plate2_heater_state": 0,
+        "plate1_fan_state": 0,
+        "plate2_fan_state": 0,
+        "led_line1_state": 0,
+        "led_line2_state": 0,
+        "led_line3_state": 0
+    }
+    # Create a payload dictionary
+    payload = {
+        "sensors": sensors,
+        "actuators": actuators
+    }
+
+    # Headers for the request
+    headers = {
+        "Content-Type": "application/json"  # Specify that we're sending JSON
+    }
+
+    try:
+        # Send a POST request
+        response = requests.post(api_url, data=json.dumps(payload), headers=headers)
+
+        # Check the response status
+        if response.status_code == 200:
+            print("Data sent successfully!")
+            print("Response:", response.json())
+        else:
+            print(f"Failed to send data. Status code: {response.status_code}")
+            print("Response:", response.text)
+    except Exception as e:
+        print("An error occurred:", e)
+
+###################################################################################################
 try:
     while True:
         print("*******************Reading sensors*****************************\n")
-        
+        send_command()
         # Read DHT sensor
         #read_dht()
         
-        # Read Hall Effect sensor
-        #read_hall()
+        # Read Light sensor
+        # read_light()
         
         # Read Light sensor
-        read_light()
-        
-        # Read Light sensor
-        read_tds()
+        # read_tds()
         # Read Laser Sensor
         #read_laser()
 
         # Read pH sensor
         #read_ph()
         
-        # Read temperature sensor
-        #read_temperature()
         
         # Read water level sensor
         #read_water_level()

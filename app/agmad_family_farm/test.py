@@ -1,15 +1,15 @@
-import board
-import busio
-import adafruit_vl53l0x
+# import board
+# import busio
+# import adafruit_vl53l0x
 
-i2c = busio.I2C(board.SCL, board.SDA)
+# i2c = busio.I2C(board.SCL, board.SDA)
 
-try:
-    vl53 = adafruit_vl53l0x.VL53L0X(i2c)
-    print("Sensor initialized!")
-    print("Range: {}mm".format(vl53.range))
-except Exception as e:
-    print("Error:", e)
+# try:
+#     vl53 = adafruit_vl53l0x.VL53L0X(i2c)
+#     print("Sensor initialized!")
+#     print("Range: {}mm".format(vl53.range))
+# except Exception as e:
+#     print("Error:", e)
 
 # import Adafruit_DHT as dht
 # from time import sleep
@@ -166,82 +166,82 @@ except Exception as e:
 #     except Exception as e:
 #         print(f"Error: {e}")
 #--------------------------------------------------------------------------------------------
-import smbus2
-import time
+# import smbus2
+# import time
 
-# I2C address of the VL53L0X
-VL53L0X_I2C_ADDR = 0x29
+# # I2C address of the VL53L0X
+# VL53L0X_I2C_ADDR = 0x29
 
-# Register addresses (based on the datasheet)
-VL53L0X_REG_IDENTIFICATION_MODEL_ID = 0xC0
-VL53L0X_SYSRANGE_START = 0x00
-VL53L0X_RESULT_RANGE_STATUS = 0x14
+# # Register addresses
+# SYSRANGE_START = 0x00
+# RESULT_RANGE_STATUS = 0x14
+# VL53L0X_REG_IDENTIFICATION_MODEL_ID = 0xC0
 
-# I2C bus
-I2C_BUS = 1
+# # I2C bus
+# I2C_BUS = 1
 
-class VL53L0X:
-    def __init__(self, i2c_bus, address):
-        self.bus = smbus2.SMBus(i2c_bus)
-        self.address = address
+# class VL53L0X:
+#     def __init__(self, i2c_bus, address):
+#         self.bus = smbus2.SMBus(i2c_bus)
+#         self.address = address
 
-    def write_byte(self, reg, value):
-        self.bus.write_byte_data(self.address, reg, value)
+#     def write_byte(self, reg, value):
+#         self.bus.write_byte_data(self.address, reg, value)
 
-    def read_byte(self, reg):
-        return self.bus.read_byte_data(self.address, reg)
+#     def read_byte(self, reg):
+#         return self.bus.read_byte_data(self.address, reg)
 
-    def read_word(self, reg):
-        data = self.bus.read_i2c_block_data(self.address, reg, 2)
-        return (data[0] << 8) | data[1]
+#     def read_word(self, reg):
+#         data = self.bus.read_i2c_block_data(self.address, reg, 2)
+#         return (data[0] << 8) | data[1]
 
-    def initialize(self):
-        # Check if the sensor responds
-        model_id = self.read_byte(VL53L0X_REG_IDENTIFICATION_MODEL_ID)
-        if model_id != 0xEE:  # Expected ID for VL53L0X
-            raise RuntimeError("Failed to find VL53L0X. Check wiring or I2C address!")
+#     def initialize(self):
+#         # Check if the sensor responds
+#         model_id = self.read_byte(VL53L0X_REG_IDENTIFICATION_MODEL_ID)
+#         if model_id != 0xEE:  # Expected ID for VL53L0X
+#             raise RuntimeError("Failed to find VL53L0X. Check wiring!")
 
-        print(f"Model ID: {hex(model_id)}")
-        print("VL53L0X initialized.")
+#         # Set timing budget (optional)
+#         self.write_byte(0x01, 0x02)  # Example timing setup
 
-    def start_ranging(self):
-        self.write_byte(VL53L0X_SYSRANGE_START, 0x01)
-        time.sleep(0.01)  # Give time to start ranging
+#         print("VL53L0X initialized.")
 
-    def get_distance(self):
-        # Wait for the result to be ready
-        while (self.read_byte(VL53L0X_RESULT_RANGE_STATUS) & 0x01) == 0:
-            time.sleep(0.01)  # Wait for 10ms
+#     def start_ranging(self):
+#         self.write_byte(SYSRANGE_START, 0x01)
 
-        # Read distance in mm
-        distance = self.read_word(VL53L0X_RESULT_RANGE_STATUS + 10)
-        return distance
+#     def get_distance(self):
+#         # Wait for the result to be ready
+#         while (self.read_byte(RESULT_RANGE_STATUS) & 0x01) == 0:
+#             time.sleep(0.01)  # Wait for 10ms
 
-    def stop_ranging(self):
-        self.write_byte(VL53L0X_SYSRANGE_START, 0x00)
+#         # Read distance in mm
+#         distance = self.read_word(RESULT_RANGE_STATUS + 10)
+#         return distance
 
-# Main program
-if __name__ == "__main__":
-    try:
-        print("Initializing VL53L0X...")
-        vl53 = VL53L0X(I2C_BUS, VL53L0X_I2C_ADDR)
-        vl53.initialize()
+#     def stop_ranging(self):
+#         self.write_byte(SYSRANGE_START, 0x00)
 
-        print("Starting ranging...")
-        vl53.start_ranging()
+# # Main program
+# if __name__ == "__main__":
+#     try:
+#         print("Initializing VL53L0X...")
+#         vl53 = VL53L0X(I2C_BUS, VL53L0X_I2C_ADDR)
+#         vl53.initialize()
 
-        while True:
-            distance = vl53.get_distance()
-            print(f"Distance: {distance} mm")
-            time.sleep(0.5)
+#         print("Starting ranging...")
+#         vl53.start_ranging()
 
-    except KeyboardInterrupt:
-        print("Stopping ranging...")
-        vl53.stop_ranging()
+#         while True:
+#             distance = vl53.get_distance()
+#             print(f"Distance: {distance} mm")
+#             time.sleep(0.5)
 
-    except Exception as e:
-        print(f"Error: {e}")
+#     except KeyboardInterrupt:
+#         print("Stopping ranging...")
+#         vl53.stop_ranging()
 
+#     except Exception as e:
+#         print(f"Error: {e}")
 #-----------------------------------------------------------------------------------------------------
 # import serial
 # import time
@@ -380,3 +380,23 @@ if __name__ == "__main__":
 # finally:
 #     GPIO.cleanup()
 #     ser.close()
+
+
+drain_valve_state = 0
+water_valve_state = 0
+nutrients_valve_state = 0
+plate1_open_valve_state = 0
+plate1_drain_valve_state = 0
+plate2_open_valve_state = 0
+plate2_drain_valve_state = 0
+pump_state = 0
+plate1_heater_state = 0
+plate2_heater_state = 1
+plate1_fan_state = 0
+plate2_fan_state = 0
+led_line1_state = 1
+led_line2_state = 0
+led_line3_state = 0
+
+command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
+print(command)
