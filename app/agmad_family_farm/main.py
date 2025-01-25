@@ -219,14 +219,14 @@ def send_command():
 def send_data():
     api_url = "https://wdy1m5yd7i.execute-api.us-east-1.amazonaws.com/RPI/RPI_DATA"
 
-    plate1_temp = read_plate_temp("plate1")
-    plate2_temp = read_plate_temp("plate2")
-    plate1_light = read_light("plate1")
-    plate2_light = read_light("plate2")
-    ec = read_tds()
-    ph = read_ph()
-    water_level = read_water_level("water")
-    nutrient_level = read_water_level("nutrients")
+    # plate1_temp = read_plate_temp("plate1")
+    # plate2_temp = read_plate_temp("plate2")
+    # plate1_light = read_light("plate1")
+    # plate2_light = read_light("plate2")
+    # ec = read_tds()
+    # ph = read_ph()
+    # water_level = read_water_level("water")
+    # nutrient_level = read_water_level("nutrients")
 
 
 
