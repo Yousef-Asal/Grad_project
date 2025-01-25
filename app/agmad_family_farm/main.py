@@ -232,18 +232,30 @@ def send_data():
 
 
     # Data to send
+    # sensors = {
+    #     "plate1_temp": plate1_temp["temp"],
+    #     "plate1_humidity": plate1_temp["humidity"],
+    #     "plate2_temp": plate2_temp["temp"],
+    #     "plate2_humidity": plate2_temp["humidity"],
+    #     "plate1_light_visible": plate1_light["visible"],
+    #     "plate2_light_visible": plate2_light["visible"],  # Assuming plate2 uses the same value for now
+    #     "ec": ec,
+    #     "ph": ph,
+    #     "water_level": water_level,
+    #     "nutrient_level": nutrient_level
+    # }
     sensors = {
-        "plate1_temp": plate1_temp["temp"],
-        "plate1_humidity": plate1_temp["humidity"],
-        "plate2_temp": plate2_temp["temp"],
-        "plate2_humidity": plate2_temp["humidity"],
-        "plate1_light_visible": plate1_light["visible"],
-        "plate2_light_visible": plate2_light["visible"],  # Assuming plate2 uses the same value for now
-        "ec": ec,
-        "ph": ph,
-        "water_level": water_level,
-        "nutrient_level": nutrient_level
-    }
+    "plate1_temp": 25.0,  # Plate 1 Temperature (°C)
+    "plate1_humidity": 60.0,  # Plate 1 Humidity (%)
+    "plate2_temp": 26.5,  # Plate 2 Temperature (°C)
+    "plate2_humidity": 58.5,  # Plate 2 Humidity (%)
+    "plate1_light_visible": 300,  # Plate 1 Visible Light Intensity (lux)
+    "plate2_light_visible": 300,  # Plate 2 Visible Light Intensity (lux)
+    "ec": 1.2,  # Electrical Conductivity (mS/cm)
+    "ph": 6.5,  # pH Level
+    "water_level": 75.0,  # Water Level (%)
+    "nutrient_level": 50.0,  # Nutrient Level (%)
+}
     actuators = {
         "drain_valve": drain_valve_state,
         "water_valve": water_valve_state,
@@ -385,15 +397,15 @@ def temp_control():
 
 try:
     while True:
-        print("*******************Reading sensors*****************************\n")
-        read_plate_temp("plate1")
-        print("done reading plate1 temp ")
-        read_water_level("water")
-        print("done reading water level ")
-        read_ph()
-        print("done reading ph ")
-        read_laser()
-        print("done reading laser ")
+        # print("*******************Reading sensors*****************************\n")
+        # read_plate_temp("plate1")
+        # print("done reading plate1 temp ")
+        # read_water_level("water")
+        # print("done reading water level ")
+        # read_ph()
+        # print("done reading ph ")
+        # read_laser()
+        # print("done reading laser ")
         send_data()
 
         # send_command()
