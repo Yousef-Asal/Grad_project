@@ -276,6 +276,7 @@ def send_data():
 
     # Create a payload dictionary
     payload = {"sensors": sensors, "actuators": actuators}
+    print("Payload to be sent:", json.dumps(payload, indent=4))
 
     headers = {"Content-Type": "application/json"}
 
