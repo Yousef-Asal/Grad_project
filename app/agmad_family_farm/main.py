@@ -218,7 +218,7 @@ def send_command():
 # Your API Gateway link
 def send_data():
     api_url = "https://wdy1m5yd7i.execute-api.us-east-1.amazonaws.com/RPI/RPI_DATA"
-
+    global drain_valve_state
     # plate1_temp = read_plate_temp("plate1")
     # plate2_temp = read_plate_temp("plate2")
     # plate1_light = read_light("plate1")
@@ -377,7 +377,7 @@ def temp_control():
 
     min_temp = 30
     max_temp = 35
-    time_
+    time_for_checking = 60
     while True:
         output = read_plate_temp("plate1")
         temp = output["temp"]
@@ -386,13 +386,16 @@ def temp_control():
             send_command()
         elif temp > max_temp:
             plate1_fan_state = 1
+            send_command()
         else:
             plate1_fan_state = 0
             plate1_heater_state = 0
             send_command()
             break
-    time.sleep()
+    time.sleep(time_for_checking)
 
+def camera_data():
+    pass
 
 
 try:
