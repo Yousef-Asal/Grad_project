@@ -276,21 +276,14 @@ def send_data():
     }
 
     # Create a payload dictionary
-    payload = {
-        "sensors": sensors,
-        "actuators": actuators
-    }
+    payload = {"sensors": sensors, "actuators": actuators}
 
-    # Headers for the request
-    headers = {
-        "Content-Type": "application/json"  # Specify that we're sending JSON
-    }
+    headers = {"Content-Type": "application/json"}
 
     try:
-        # Send a POST request
-        response = requests.post(api_url, data=json.dumps(payload), headers=headers)
+        print("Payload:", json.dumps(payload, indent=4))  # Debugging
+        response = requests.post(api_url, json=payload, headers=headers)
 
-        # Check the response status
         if response.status_code == 200:
             print("Data sent successfully!")
             print("Response:", response.json())
