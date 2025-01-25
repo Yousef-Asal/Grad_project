@@ -396,7 +396,11 @@ plate1_fan_state = 0
 plate2_fan_state = 0
 led_line1_state = 1
 led_line2_state = 0
-led_line3_state = 0
+led_line3_state = 1
 
-command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
-print(command)
+
+def test():
+    command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
+    print(command)
+
+test()

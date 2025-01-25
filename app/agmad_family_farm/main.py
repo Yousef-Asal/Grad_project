@@ -23,7 +23,7 @@ BAUD_RATE = 9600
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 time.sleep(2)  # Allow time for serial to initialize
 
-i2c = busio.I2C(board.SCL, board.SDA)
+i2c = busio.I2C(board.SCL, board.SDA)  # laser 
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
 water_pin = 20 # GPIO pin for Digital Water Level Sensor
@@ -47,6 +47,8 @@ plate2_fan_state = 0
 led_line1_state = 0
 led_line2_state = 0
 led_line3_state = 0
+mixer_state = 0
+
 
 
 
@@ -176,6 +178,7 @@ def read_laser():
     print("Laser Data:")
     print("Range: {0}mm".format(vl53.range))
     print("-----------------------------------------------------------------")
+    return(vl53.range)
 
 #//////////////////////////////////////////////////////////////////////
 
@@ -195,7 +198,7 @@ def read_adc(channel):
 #**************************************************Actuators***************************************************#
 #to send a command to the esp
 def send_command():
-    command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
+    command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}{mixer_state}"
     ser.write(f"{command}\n".encode("utf-8"))
     print("raspberry send a command")
     time.sleep(0.5)  # Wait for response
@@ -235,29 +238,31 @@ def send_data():
         "plate2_temp": plate2_temp["temp"],
         "plate2_humidity": plate2_temp["humidity"],
         "plate1_light_visible": plate1_light["visible"],
-        "plate2_light_visible": plate1_light["visible"],  # Assuming plate2 uses the same value for now
+        "plate2_light_visible": plate2_light["visible"],  # Assuming plate2 uses the same value for now
         "ec": ec,
         "ph": ph,
         "water_level": water_level,
         "nutrient_level": nutrient_level
     }
     actuators = {
-        "drain_valve_state": 0,
-        "water_valve_state": 0,
-        "nutrients_valve_state": 0,
-        "plate1_open_valve_state": 0,
-        "plate1_drain_valve_state": 0,
-        "plate2_open_valve_state": 0,
-        "plate2_drain_valve_state": 0,
-        "pump_state": 0,
-        "plate1_heater_state": 0,
-        "plate2_heater_state": 0,
-        "plate1_fan_state": 0,
-        "plate2_fan_state": 0,
-        "led_line1_state": 0,
-        "led_line2_state": 0,
-        "led_line3_state": 0
+        "drain_valve": drain_valve_state,
+        "water_valve": water_valve_state,
+        "nutrients_valve": nutrients_valve_state,
+        "plate1_open_valve": plate1_open_valve_state,
+        "plate1_drain_valve": plate1_drain_valve_state,
+        "plate2_open_valve": plate2_open_valve_state,
+        "plate2_drain_valve": plate2_drain_valve_state,
+        "pump": pump_state,
+        "plate1_heater": plate1_heater_state,
+        "plate2_heater": plate2_heater_state,
+        "plate1_fan": plate1_fan_state,
+        "plate2_fan": plate2_fan_state,
+        "led_line1": led_line1_state,
+        "led_line2": led_line2_state,
+        "led_line3": led_line3_state,
+        "mixer": mixer_state
     }
+
     # Create a payload dictionary
     payload = {
         "sensors": sensors,
@@ -284,10 +289,114 @@ def send_data():
         print("An error occurred:", e)
 
 ###################################################################################################
+#********************************************Control**********************************************#
+def tank_control():
+    desired_water_level = 10
+    mixer_height = 10
+    required_time_for_plate = 60
+    empty_plate_time = 30
+    global water_valve_state
+    global nutrients_valve_state
+    global mixer_state
+    global pump_state 
+    global plate1_drain_valve_state
+    global plate2_drain_valve_state
+    global plate1_open_valve_state
+    global plate2_open_valve_state
+
+    while True:
+        while True:
+            water_level = read_laser()
+            if water_level >= desired_water_level:
+                water_valve_state = 0
+                nutrients_valve_state = 0
+                mixer_state = 1
+                send_command()
+                break
+            else:
+                water_valve_state = 1
+                nutrients_valve_state = 1
+                send_command()
+        time.sleep(20)
+        pump_state = 1
+        mixer_state = 0
+        plate1_drain_valve_state = 0
+        plate2_drain_valve_state = 0
+        plate1_open_valve_state = 1
+        plate2_open_valve_state = 0
+        send_command()
+        while True:
+            water_level = read_laser()
+            if water_level >= mixer_height:
+                pump_state = 0
+                send_command()
+                break
+            else:
+                continue
+        time.sleep(required_time_for_plate)
+        plate1_drain_valve_state = 1
+        time.sleep(empty_plate_time)
+
+def light_control():
+    global led_line1_state
+    global led_line2_state
+    global led_line3_state
+
+    on_time = 60
+    off_time = 30
+
+    while True:
+        led_line1_state = 1
+        led_line2_state = 1
+        led_line3_state = 1
+        send_command()
+        time.sleep(on_time)
+
+        led_line1_state = 0
+        led_line2_state = 0
+        led_line3_state = 0
+        send_command()
+
+        time.sleep(off_time)
+
+def temp_control():
+    global plate1_heater_state
+    global plate1_fan_state
+
+    min_temp = 30
+    max_temp = 35
+    time_
+    while True:
+        output = read_plate_temp("plate1")
+        temp = output["temp"]
+        if temp < min_temp:
+            plate1_heater_state = 1
+            send_command()
+        elif temp > max_temp:
+            plate1_fan_state = 1
+        else:
+            plate1_fan_state = 0
+            plate1_heater_state = 0
+            send_command()
+            break
+    time.sleep()
+
+
+
 try:
     while True:
         print("*******************Reading sensors*****************************\n")
-        send_command()
+        read_plate_temp("plate1")
+        print("done reading plate1 temp ")
+        read_water_level("water")
+        print("done reading water level ")
+        read_ph()
+        print("done reading ph ")
+        read_laser()
+        print("done reading laser ")
+        send_data()
+
+        # send_command()
         # Read DHT sensor
         #read_dht()
         

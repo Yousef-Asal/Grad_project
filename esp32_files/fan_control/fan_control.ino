@@ -20,8 +20,9 @@
 // 13.led_line1_state 
 // 14.led_line2_state 
 // 15.led_line3_state 
+// 16.mixer
 
-#define actuators [1,3,4,13,12,2,11,18,19,17,16,14,15]
+#define actuators [1,3,4,13,12,2,11,18,19,17,16,14,15,2]
 HardwareSerial MySerial(1); // UART communication on Serial1
 
 void setup() {

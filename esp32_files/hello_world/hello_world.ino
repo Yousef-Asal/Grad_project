@@ -1,10 +1,16 @@
+int fanPin = 13;  // Pin connected to the fan (change according to your setup)
+
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
+  // Set the fan pin as OUTPUT
+  // pinMode(fanPin, OUTPUT);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.println("hello bruh");
-  delay(500);
+  // // Turn the fan on
+  // digitalWrite(fanPin, LOW);
+  // delay(2000); // Wait for 5 seconds
+  
+  // // Turn the fan off
+  // digitalWrite(fanPin, LOW);
+  // delay(2000); // Wait for 5 seconds before repeating
 }
