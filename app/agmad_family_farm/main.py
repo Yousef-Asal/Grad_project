@@ -257,8 +257,8 @@ def send_data():
     "nutrient_level": 50.0,  # Nutrient Level (%)
 }
     actuators = {
-        "drain_valve": drain_valve_state,
-        "water_valve": water_valve_state,
+        "drain_valve": 0,
+        "water_valve": 1,
         "nutrients_valve": nutrients_valve_state,
         "plate1_open_valve": plate1_open_valve_state,
         "plate1_drain_valve": plate1_drain_valve_state,
