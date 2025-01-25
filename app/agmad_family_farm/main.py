@@ -218,7 +218,6 @@ def send_command():
 # Your API Gateway link
 def send_data():
     api_url = "https://wdy1m5yd7i.execute-api.us-east-1.amazonaws.com/RPI/RPI_DATA"
-    global drain_valve_state
     # plate1_temp = read_plate_temp("plate1")
     # plate2_temp = read_plate_temp("plate2")
     # plate1_light = read_light("plate1")
