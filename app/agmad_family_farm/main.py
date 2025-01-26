@@ -396,8 +396,8 @@ try:
         # print("*******************Reading sensors*****************************\n")
         #print(read_plate_temp("plate1"))
         # print("done reading plate1 temp ")
-        print(read_water_level("water"))
-        print(read_water_level("nutrients"))
+        read_water_level("water")
+        read_water_level("nutrients")
         # print("done reading water level ")
         # read_ph()
         # print("done reading ph ")
@@ -410,15 +410,15 @@ try:
         #read_dht()
         
         # Read Light sensor
-        print(read_light("plate1"))
+        read_light("plate1")
         
         # Read Light sensor
-        print(read_tds())
+        read_tds()
         # Read Laser Sensor
         #read_laser()
 
         # Read pH sensor
-        print(read_ph())
+        read_ph()
         
         
         # Read water level sensor
