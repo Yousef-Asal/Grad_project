@@ -394,7 +394,7 @@ def camera_data():
 try:
     while True:
         # print("*******************Reading sensors*****************************\n")
-        print(read_plate_temp("plate1"))
+        #print(read_plate_temp("plate1"))
         # print("done reading plate1 temp ")
         print(read_water_level("water"))
         print(read_water_level("nutrients"))
