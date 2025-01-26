@@ -20,8 +20,8 @@ i2c = busio.I2C(board.SCL, board.SDA)
 
 PH_SENSOR_CHANNEL = 1 # ADC channel for pH sensor
 
-WATER_LEVEL1_PIN = 20 # GPIO pin for Digital Water Level Sensor
-WATER_LEVEL2_PIN = 21 # GPIO pin for Digital Water Level Sensor
+WATER_LEVEL1_PIN = 6 # GPIO pin for Digital Water Level Sensor
+WATER_LEVEL2_PIN = 5 # GPIO pin for Digital Water Level Sensor
 GPIO.setmode(GPIO.BCM)
 
 spi = busio.SPI(clock=SCLK, MISO=MISO, MOSI=MOSI)
@@ -169,7 +169,7 @@ try:
         print("*******************Reading sensors*****************************\n")
         
         # Read DHT sensor
-        read_dht()
+        #read_dht()
         
         # Read Hall Effect sensor
         #read_hall()
@@ -181,13 +181,13 @@ try:
         #read_laser()
 
         # Read pH sensor
-        #read_ph()
+        read_ph()
         
         # Read temperature sensor
         #read_temperature()
         
         # Read water level sensor
-        #read_water_level()
+        read_water_level()
         
         time.sleep(4)  # Delay between readings
 
