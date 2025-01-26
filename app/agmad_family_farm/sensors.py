@@ -175,19 +175,19 @@ try:
         #read_hall()
         
         # Read Light sensor
-        read_light()
+        #read_light()
         
         # Read Laser Sensor
         #read_laser()
 
         # Read pH sensor
-        read_ph()
+        #read_ph()
         
         # Read temperature sensor
         #read_temperature()
         
         # Read water level sensor
-        read_water_level()
+        #read_water_level()
         
         time.sleep(4)  # Delay between readings
 
