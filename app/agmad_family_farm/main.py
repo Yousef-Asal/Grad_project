@@ -410,7 +410,7 @@ try:
         #read_dht()
         
         # Read Light sensor
-        # read_light()
+        print(read_light("plate1"))
         
         # Read Light sensor
         print(read_tds())
