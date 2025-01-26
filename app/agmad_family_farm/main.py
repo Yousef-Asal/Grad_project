@@ -17,6 +17,12 @@ from adafruit_mcp3xxx.analog_in import AnalogIn
 import serial
 import requests
 import json
+import boto3
+import os
+import subprocess
+from flask import Flask, render_template, Response
+import threading
+from datetime import datetime
 
 SERIAL_PORT = "/dev/serial0"
 BAUD_RATE = 9600
@@ -48,7 +54,6 @@ led_line1_state = 0
 led_line2_state = 0
 led_line3_state = 0
 mixer_state = 0
-
 
 
 
@@ -372,24 +377,21 @@ def temp_control():
     max_temp = 35
     time_for_checking = 60
     while True:
-        output = read_plate_temp("plate1")
-        temp = output["temp"]
-        if temp < min_temp:
-            plate1_heater_state = 1
-            send_command()
-        elif temp > max_temp:
-            plate1_fan_state = 1
-            send_command()
-        else:
-            plate1_fan_state = 0
-            plate1_heater_state = 0
-            send_command()
-            break
-    time.sleep(time_for_checking)
-
-def camera_data():
-    pass
-
+        while True:
+            output = read_plate_temp("plate1")
+            temp = output["temp"]
+            if temp < min_temp:
+                plate1_heater_state = 1
+                send_command()
+            elif temp > max_temp:
+                plate1_fan_state = 1
+                send_command()
+            else:
+                plate1_fan_state = 0
+                plate1_heater_state = 0
+                send_command()
+                break
+        time.sleep(time_for_checking)
 
 try:
     while True:

@@ -382,25 +382,40 @@
 #     ser.close()
 
 
-drain_valve_state = 0
-water_valve_state = 0
-nutrients_valve_state = 0
-plate1_open_valve_state = 0
-plate1_drain_valve_state = 0
-plate2_open_valve_state = 0
-plate2_drain_valve_state = 0
-pump_state = 0
-plate1_heater_state = 0
-plate2_heater_state = 1
-plate1_fan_state = 0
-plate2_fan_state = 0
-led_line1_state = 1
-led_line2_state = 0
-led_line3_state = 1
+# drain_valve_state = 0
+# water_valve_state = 0
+# nutrients_valve_state = 0
+# plate1_open_valve_state = 0
+# plate1_drain_valve_state = 0
+# plate2_open_valve_state = 0
+# plate2_drain_valve_state = 0
+# pump_state = 0
+# plate1_heater_state = 0
+# plate2_heater_state = 1
+# plate1_fan_state = 0
+# plate2_fan_state = 0
+# led_line1_state = 1
+# led_line2_state = 0
+# led_line3_state = 1
 
 
-def test():
-    command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
-    print(command)
+# def test():
+#     command = f"{drain_valve_state}{water_valve_state}{nutrients_valve_state}{plate1_open_valve_state}{plate1_drain_valve_state}{plate2_open_valve_state}{plate2_drain_valve_state}{pump_state}{plate1_heater_state}{plate2_heater_state}{plate1_fan_state}{plate2_fan_state}{led_line1_state}{led_line2_state}{led_line3_state}"
+#     print(command)
 
-test()
+# test()
+
+import serial
+import time
+
+# Initialize serial communication
+ser = serial.Serial('/dev/serial0', 9600, timeout=1)
+ser.flush()
+
+while True:
+    command = input("Enter 'on' to turn on the pump, or 'off' to turn it off: ").strip()
+    if command.lower() in ['on', 'off']:
+        ser.write((command + '\n').encode('utf-8'))
+        print(f"Sent command: {command}")
+    else:
+        print("Invalid command. Enter 'on' or 'off'.")
