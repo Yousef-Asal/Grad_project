@@ -56,8 +56,8 @@ mixer_state = 0
 #**************************************************Sensors***************************************************#
 
 #dht sensors readings
-plate1_dht = adafruit_dht.DHT22(board.D5)
-plate2_dht = adafruit_dht.DHT22(board.D13)
+plate1_dht = adafruit_dht.DHT22(board.D13)
+plate2_dht = adafruit_dht.DHT22(board.D12)
 pcb_dht = adafruit_dht.DHT11(board.D0)
 
 def read_plate_temp(plate):
@@ -163,7 +163,7 @@ def read_ph():
 
 #Water level sensors
 def read_water_level(tank):
-    pin = 20 if tank == "water" else 21
+    pin = 6 if tank == "water" else 5
     GPIO.setup(pin, GPIO.IN)
     if GPIO.input(pin) == GPIO.HIGH:
         print("Water Level Sensor1: Water detected!")
@@ -394,15 +394,16 @@ def camera_data():
 try:
     while True:
         # print("*******************Reading sensors*****************************\n")
-        # read_plate_temp("plate1")
+        print(read_plate_temp("plate1"))
         # print("done reading plate1 temp ")
-        # read_water_level("water")
+        print(read_water_level("water"))
+        print(read_water_level("nutrients"))
         # print("done reading water level ")
         # read_ph()
         # print("done reading ph ")
         # read_laser()
         # print("done reading laser ")
-        send_data()
+        #send_data()
 
         # send_command()
         # Read DHT sensor
@@ -412,12 +413,12 @@ try:
         # read_light()
         
         # Read Light sensor
-        # read_tds()
+        print(read_tds())
         # Read Laser Sensor
         #read_laser()
 
         # Read pH sensor
-        #read_ph()
+        print(read_ph())
         
         
         # Read water level sensor
