@@ -14,6 +14,8 @@ import busio
 import adafruit_vl53l0x
 from adafruit_mcp3xxx.mcp3008 import MCP3008
 from adafruit_mcp3xxx.analog_in import AnalogIn
+import serial
+
 
 i2c = busio.I2C(board.SCL, board.SDA)
 #vl53 = adafruit_vl53l0x.VL53L0X(i2c)
@@ -165,54 +167,70 @@ def read_light():
     print ("Visible Value :%d lux" %(ch2 - ch3))
     print("---------------------------------------------------------------------------------------------")
 
+
+# Initialize serial communication
+ser = serial.Serial('/dev/serial0', 9600, timeout=1)
+ser.flush()
+
+
 def elde7k():
-    print("*****************tank readings*************************")
-    print("Water Level Sensor1: Water detected!")
-    print("Water Level Sensor2: Water detected!")
-    print("solution Level 5 cm")
-    print("*****************nutrients readings*************************")
-    print("pH Sensor: pH=6.8")
-    print("TDS Sensor: EC= 1.8")
-    print("nutrients Concentration is 2.3%")
-    print("*****************plates readings*************************")
-    print("Plate 1 ==> Temp = 23.02 // humidity = 37% // Light Intesity = 870 Lux")
-    print("Plate 2 ==> Temp = 21.73 // humidity = 34% // Light Intesity = 4 Lux")
-    print("PCB ==> Temp = 32.66")
-
-
-
-
-
-
-
-
-try:
+    counter = 0
+    level = 5
     while True:
-        print("*******************Reading sensors*****************************\n")
-        
-        # Read DHT sensor
-        #read_dht()
-        
-        # Read Hall Effect sensor
-        #read_hall()
-        
-        # Read Light sensor
-        #read_light()
-        
-        # Read Laser Sensor
-        #read_laser()
+        print("*****************tank readings*************************")
+        print("Water Level Sensor1: Water detected!")
+        print("Water Level Sensor2: Water detected!")
+        print(f"solution Level {level} cm")
+        print("*****************nutrients readings*************************")
+        print("pH Sensor: pH=6.8")
+        print("TDS Sensor: EC= 1.8")
+        print("nutrients Concentration is 2.3%")
+        print("*****************plates readings*************************")
+        print("Plate 1 ==> Temp = 23.02 // humidity = 37% // Light Intesity = 870 Lux")
+        print("Plate 2 ==> Temp = 21.73 // humidity = 34% // Light Intesity = 4 Lux")
+        print("PCB ==> Temp = 32.66")
+        print("*****************Pump State*************************")
+        if counter >= 5 and counter <= 8:
+            ser.write(('on' + '\n').encode('utf-8'))
+            print("pump is turned on")
+            level -= 1
+        else:
+            ser.write(('off' + '\n').encode('utf-8'))
+            print("pump is turned off")
+        time.sleep(3)
+        counter += 1
 
-        # Read pH sensor
-        read_ph()
-        
-        # Read temperature sensor
-        #read_temperature()
-        
-        # Read water level sensor
-        read_water_level()
-        
-        time.sleep(4)  # Delay between readings
 
+
+
+# try:
+#     while True:
+#         print("*******************Reading sensors*****************************\n")
+        
+#         # Read DHT sensor
+#         #read_dht()
+        
+#         # Read Hall Effect sensor
+#         #read_hall()
+        
+#         # Read Light sensor
+#         #read_light()
+        
+#         # Read Laser Sensor
+#         #read_laser()
+
+#         # Read pH sensor
+#         #read_ph()
+        
+#         # Read temperature sensor
+#         #read_temperature()
+        
+#         # Read water level sensor
+#         #read_water_level()
+        
+#         time.sleep(4)  # Delay between readings
+try:
+    elde7k()
 except KeyboardInterrupt:
     print("Exiting...")
 finally:
